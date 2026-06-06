@@ -69,12 +69,15 @@ dependencies {
 	
 	implementation("androidx.navigation:navigation-compose:2.7.7")
 	implementation(libs.androidx.compose.ui.graphics)
+	implementation(libs.androidx.compose.foundation.layout)
 	
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	
 	implementation("androidx.room:room-runtime:2.7.1")
 	
 	implementation("androidx.room:room-ktx:2.7.1")
+	
+	implementation("io.coil-kt:coil-compose:2.7.0")
 	
 	ksp("androidx.room:room-compiler:2.7.1")
 }

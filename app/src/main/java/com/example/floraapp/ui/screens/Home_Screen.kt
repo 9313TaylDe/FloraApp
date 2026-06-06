@@ -1,6 +1,6 @@
 package com.example.floraapp.ui.screens
 
-import ProductsViewModel
+import Recomendations
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -52,31 +54,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.floraapp.R
+import com.example.floraapp.repository.ProductViewModel
 import com.example.floraapp.ui.colors.fundocardsuggestions
 import com.example.floraapp.ui.colors.iconsColor
 import com.example.floraapp.ui.colors.textFieldBorderColor
 import com.example.floraapp.ui.colors.titleColor
 import com.example.floraapp.ui.components.BoasVindas
-import com.example.floraapp.ui.components.Recomendations
 
 @Composable
 fun Home_Screen(
-	productsViewModel: ProductsViewModel? = null
+	productViewModel: ProductViewModel? = null,
+	onHome: () -> Unit = {},
+	onFavoritos: () -> Unit = {},
+	onAdd: () -> Unit = {},
+	onCuidados: () -> Unit = {},
+	onPerfil: () -> Unit = {}
 ) {
 	val botoes = listOf(
-		"Home",
-		"Favoritos",
-		"",
-		"Cuidados",
-		"Perfil",
-		
-		)
+		"HOME",
+		"FAVORITES",
+		"ADD",
+		"CUIDADOS",
+		"PERFIL"
+	)
+	
 	
 	fun iconeDoBotao(botao: String) = when (botao) {
-		"Home" -> Icons.Default.Home
-		"Favoritos" -> Icons.Default.Favorite
-		"Cuidados" -> Icons.Default.Eco
-		"Perfil" -> Icons.Default.Person
+		"HOME" -> Icons.Default.Home
+		"FAVORITES" -> Icons.Default.Favorite
+		"CUIDADOS" -> Icons.Default.Eco
+		"PERFIL" -> Icons.Default.Person
 		else -> Icons.Default.Add
 	}
 	
@@ -99,11 +106,12 @@ fun Home_Screen(
 		
 	}
 	
-	val produutos = productsViewModel
-		?.pegarTodos
-		?.collectAsState(initial = emptyList())
+	val pprodutos = productViewModel
+		?.pegarTodosProdutos
+		?.collectAsState()
 		?.value
 		?: emptyList()
+	
 	
 	var searching by remember { mutableStateOf("") }
 	Scaffold(
@@ -117,7 +125,6 @@ fun Home_Screen(
 					.padding(16.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
-				
 				Column(
 					modifier = Modifier
 						.weight(1f)
@@ -139,17 +146,32 @@ fun Home_Screen(
 		},
 		bottomBar = {
 			Row(
-				modifier = Modifier.fillMaxWidth()
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 20.dp),
+				horizontalArrangement = Arrangement.SpaceBetween
 			) {
-				LazyRow() {
-					items(botoes) { botoesHome ->
-						
-						Text(
-							text = botoesHome
-						)
+				botoes.forEach { bootos ->
+					Button(
+						colors = ButtonDefaults.buttonColors(
+							containerColor = Color.Transparent
+						),
+						modifier = Modifier.background(Color.Transparent),
+						onClick = {
+							when (bootos) {
+								"HOME" -> onHome()
+								"ADD" -> onAdd()
+								"FAVORITES" -> onFavoritos()
+								"CUIDADOS" -> onCuidados()
+								"Perfil" -> onPerfil()
+							}
+						}
+					) {
 						Icon(
-							imageVector = iconeDoBotao(botoesHome), contentDescription = ""
+							imageVector = iconeDoBotao(bootos),
+							contentDescription = "", tint = Color.Black
 						)
+						
 					}
 				}
 			}
@@ -307,18 +329,23 @@ fun Home_Screen(
 								modifier = Modifier.size(45.dp),
 								tint = iconsColor
 							)
-							Text(text = cattegs, fontSize = 10.sp, fontWeight = FontWeight.SemiBold
+							Text(
+								text = cattegs, fontSize = 10.sp, fontWeight = FontWeight.SemiBold
 							)
 						}
 					}
 				}
 			}
-			if (produutos.isEmpty()) {
-				Text("Nenhum produto encontrado!")
+			
+			if (pprodutos.isEmpty()) {
+				Text("Nenhum produto para exibir")
 			} else {
-				LazyRow() {
-					items(produutos) { prods ->
-						Recomendations(prods)
+				LazyRow(
+				) {
+					items(pprodutos) { prods ->
+						Recomendations(
+							prods
+						)
 					}
 				}
 			}

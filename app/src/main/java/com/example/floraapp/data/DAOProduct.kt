@@ -11,15 +11,13 @@ import kotlinx.coroutines.flow.Flow
 interface DAOProduct {
 	
 	@Insert
-	suspend fun inserir(producstList: ProducstList) {
-	}
+	suspend fun inserir(producstList: ProducstList)
 	
 	@Delete
-	suspend fun deletar(producstList: ProducstList) {
-	}
+	suspend fun deletar(producstList: ProducstList)
 	
 	@Update
-	suspend fun atualizar(producstList: ProducstList){}
+	suspend fun atualizar(producstList: ProducstList)
 	
 	@Query("SELECT * FROM ProducstList")
 	fun pegarTodos(): Flow<List<ProducstList>>
