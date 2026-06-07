@@ -22,6 +22,11 @@ interface DAOProduct {
 	@Query("SELECT * FROM ProducstList")
 	fun pegarTodos(): Flow<List<ProducstList>>
 	
+	@Query("SELECT * FROM ProducstList WHERE id = :id")
+	fun pegarPorId(id: Int): Flow<ProducstList?>
+	
+	@Query("UPDATE ProducstList SET favorite = :favorite WHERE id = :id")
+	suspend fun updateFavorite(id: Int, favorite: Boolean)
 }
 
 

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -16,6 +18,7 @@ import com.example.floraapp.repository.ProductFactory
 import com.example.floraapp.repository.ProductViewModel
 import com.example.floraapp.rotas.Rotas
 import com.example.floraapp.ui.screens.AddToScreen
+import com.example.floraapp.ui.screens.Details_Screen
 import com.example.floraapp.ui.screens.Home_Screen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -38,8 +41,7 @@ class MainActivity : AppCompatActivity() {
 						title = "Jiboia",
 						description = "Planta resistente",
 						price = 29.90f,
-						img = null,
-						imgresources = R.drawable.jiboiaplanta,
+						imgRes = R.drawable.jiboiaplanta,
 						typeMedia = ""
 					)
 				)
@@ -60,17 +62,27 @@ class MainActivity : AppCompatActivity() {
 				startDestination = Rotas.HOME
 			) {
 				composable(Rotas.HOME) {
+					
 					Home_Screen(
 						productViewModel = viewmodel,
-						onAdd = {
-							navController.navigate(Rotas.ADD_SCREEN)
+						
+						onDetails = { id ->
+							
+							navController.navigate(
+								"${Rotas.DETAILS}/$id"
+							)
 						},
-						onHome = {
-							navController.navigate(Rotas.HOME)
-						}, onPerfil = {}, onCuidados = {}, onFavoritos = {}
+						
+						onAdd = {
+							navController.navigate(Rotas.ADD)
+						},
+						onHome = {},
+						onFavorites = {},
+						onCuidados = {},
+						onPerfil = {}
 					)
 				}
-				composable(Rotas.ADD_SCREEN) {
+				composable(Rotas.ADD) {
 					AddToScreen(
 						onBack = {
 							navController.popBackStack()
@@ -81,6 +93,46 @@ class MainActivity : AppCompatActivity() {
 							navController.navigate(Rotas.HOME)
 						}
 					)
+				}
+				
+				composable(Rotas.DETAILS_ID) { backStackEntry ->
+					
+					val id = backStackEntry.arguments
+						?.getString("id")
+						?.toIntOrNull() ?: 0
+					
+					Details_Screen(
+						id = id,
+						viewmodel = viewmodel,
+						voltar = {
+							navController.popBackStack()
+						},
+						irparaFavorito = {},
+						irparaAtualizar = {
+							navController.navigate("add_screen/$id")
+							
+						}
+					)
+				}
+				composable(Rotas.ADD_EDIT) { backStackEntry ->
+					val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 0
+					
+					val produto by viewmodel.pegarPoriD(id).collectAsState(initial = null)
+					produto?.let {
+						
+						AddToScreen(
+							produto = it,
+							onBack = {
+								navController.popBackStack()
+							},
+							onSave = { produtoAtualizado ->
+								
+								viewmodel.Atualizar(produtoAtualizado)
+								
+								navController.popBackStack()
+							}
+						)
+					}
 				}
 			}
 		}

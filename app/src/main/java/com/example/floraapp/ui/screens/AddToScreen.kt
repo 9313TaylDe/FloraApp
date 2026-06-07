@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -29,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,26 +43,54 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.floraapp.R
 import com.example.floraapp.data.ProducstList
 import com.example.floraapp.ui.colors.DarkGreen
 
 @Composable
 fun AddToScreen(
+	produto: ProducstList? = null,
 	onBack: () -> Unit,
 	onSave: (ProducstList) -> Unit
 ) {
 	
-	var nameplant by rememberSaveable { mutableStateOf("") }
-	var species by rememberSaveable { mutableStateOf("") }
-	var price by rememberSaveable { mutableFloatStateOf(0f) }
-	var category by rememberSaveable { mutableStateOf("") }
-	var obsrvations by rememberSaveable { mutableStateOf("") }
-	var imgplant by remember { mutableStateOf<Uri?>(null) }
+	var nomePlanta by rememberSaveable {
+		mutableStateOf(produto?.title ?: "")
+	}
 	
+	var especie by rememberSaveable {
+		mutableStateOf(produto?.description ?: "")
+	}
+	
+	var preco by rememberSaveable {
+		mutableStateOf(produto?.price?.toString() ?: "")
+	}
+	
+	var categoria by rememberSaveable {
+		mutableStateOf(produto?.typeMedia ?: "")
+	}
+	
+	var observacoes by rememberSaveable {
+		mutableStateOf(produto?.description ?: "")
+	}
+	
+	var imagemSelecionada by remember {
+		mutableStateOf<Any?>(
+			when {
+				produto?.imgURI?.isNotEmpty() == true ->
+					Uri.parse(produto.imgURI)
+				
+				produto?.imgRes != 0 ->
+					produto?.imgRes
+				
+				else -> null
+			}
+		)
+	}
 	val launcher = rememberLauncherForActivityResult(
 		ActivityResultContracts.PickVisualMedia()
 	) { uri ->
-		imgplant = uri
+		imagemSelecionada = uri
 	}
 	
 	Scaffold(
@@ -170,7 +196,7 @@ fun AddToScreen(
 					verticalArrangement = Arrangement.Center
 				) {
 					
-					if (imgplant == null) {
+					if (imagemSelecionada == null) {
 						
 						Icon(
 							imageVector = Icons.Default.Photo,
@@ -188,7 +214,7 @@ fun AddToScreen(
 					} else {
 						
 						AsyncImage(
-							model = imgplant,
+							model = imagemSelecionada,
 							contentDescription = null,
 							modifier = Modifier.size(imageSize)
 						)
@@ -204,8 +230,8 @@ fun AddToScreen(
 				
 				TextField(
 					modifier = Modifier.fillMaxWidth(),
-					value = nameplant,
-					onValueChange = { nameplant = it }
+					value = nomePlanta,
+					onValueChange = { nomePlanta = it }
 				)
 				
 				Spacer(modifier = Modifier.height(12.dp))
@@ -217,8 +243,8 @@ fun AddToScreen(
 				
 				TextField(
 					modifier = Modifier.fillMaxWidth(),
-					value = species,
-					onValueChange = { species = it }
+					value = especie,
+					onValueChange = { especie = it }
 				)
 				
 				Spacer(modifier = Modifier.height(12.dp))
@@ -230,8 +256,20 @@ fun AddToScreen(
 				
 				TextField(
 					modifier = Modifier.fillMaxWidth(),
-					value = category,
-					onValueChange = { category = it }
+					value = categoria,
+					onValueChange = { categoria = it }
+				)
+				Spacer(modifier = Modifier.height(12.dp))
+				
+				Text(
+					text = "Preço",
+					fontSize = titleSize
+				)
+				
+				TextField(
+					modifier = Modifier.fillMaxWidth(),
+					value = preco,
+					onValueChange = { preco = it }
 				)
 				
 				Spacer(modifier = Modifier.height(12.dp))
@@ -243,8 +281,8 @@ fun AddToScreen(
 				
 				TextField(
 					modifier = Modifier.fillMaxWidth(),
-					value = obsrvations,
-					onValueChange = { obsrvations = it }
+					value = observacoes,
+					onValueChange = { observacoes = it }
 				)
 				
 				Spacer(modifier = Modifier.height(24.dp))
@@ -256,17 +294,19 @@ fun AddToScreen(
 							if (isTablet) 60.dp else 52.dp
 						),
 					enabled =
-						species.isNotEmpty() &&
-								category.isNotEmpty() &&
-								nameplant.isNotEmpty() &&
-								imgplant != null,
+						especie.isNotEmpty() &&
+								categoria.isNotEmpty() &&
+								nomePlanta.isNotEmpty() &&
+								imagemSelecionada != null,
 					onClick = {
 						val newItem = ProducstList(
-							title = nameplant,
-							description = obsrvations,
-							price = price,
-							img = imgplant?.toString(),
-							typeMedia = category
+							id = produto?.id ?: 0,
+							title = nomePlanta,
+							description = observacoes,
+							price = preco.toFloatOrNull() ?: 0f,
+							imgRes = R.drawable.outline_local_florist_24,
+							typeMedia = categoria,
+							favorite = produto?.favorite ?: false
 						)
 						
 						onSave(newItem)

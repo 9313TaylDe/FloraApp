@@ -1,7 +1,10 @@
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Eco
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -18,25 +22,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.floraapp.ui.colors.iconsColor
+import com.example.floraapp.R
+import android.net.Uri
 import com.example.floraapp.data.ProducstList
 
 @Composable
 fun Recomendations(
-	producstList: ProducstList
+	producstList: ProducstList,
+	irparaDetails: (Int) -> Unit,
+	onAddToFavorite: (ProducstList) -> Unit
 ) {
 	
 	val newPrice = String.format("%.2f", producstList.price)
-	val imgDecides = producstList.imgresources ?: producstList.img
-	
+	val model = when {
+		producstList.imgURI.isNotEmpty() ->
+			android.net.Uri.parse(producstList.imgURI)
+		
+		producstList.imgRes != 0 ->
+			producstList.imgRes
+		
+		else ->
+			R.drawable.outline_local_florist_24
+	}
 	val configuration = LocalConfiguration.current
 	val screenWidth = configuration.screenWidthDp
 	
@@ -69,8 +86,9 @@ fun Recomendations(
 		modifier = Modifier
 			.width(cardWidth)
 			.padding(6.dp)
+			.clickable { irparaDetails(producstList.id) },
+		shape = RoundedCornerShape(16.dp)
 	) {
-		
 		Column {
 			
 			Box(
@@ -80,141 +98,92 @@ fun Recomendations(
 			) {
 				
 				AsyncImage(
-					model = imgDecides,
+					model = model
+					,
 					contentDescription = producstList.title,
-					modifier = Modifier
-						.fillMaxSize()
-						.clip(
-							RoundedCornerShape(
-								topStart = 12.dp,
-								topEnd = 12.dp
-							)
-						),
+					modifier = Modifier.fillMaxSize(),
 					contentScale = ContentScale.Crop
 				)
 				
 				Row(
 					modifier = Modifier
-						.align(Alignment.TopEnd)
-						.padding(6.dp),
+						.align(Alignment.TopStart)
+						.padding(8.dp)
+						.background(
+							Color(0xAA4CAF50),
+							RoundedCornerShape(20.dp)
+						)
+						.padding(horizontal = 8.dp, vertical = 4.dp),
 					verticalAlignment = Alignment.CenterVertically
 				) {
+					
 					Icon(
 						imageVector = Icons.Default.Eco,
-						contentDescription = null
+						contentDescription = null,
+						tint = Color.White,
+						modifier = Modifier.size(14.dp)
 					)
+					
+					Spacer(modifier = Modifier.width(4.dp))
 					
 					Text(
-						text = producstList.typeMedia
+						text = producstList.typeMedia,
+						color = Color.White,
+						fontSize = 10.sp
 					)
-				}
-			}
-			Row(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(10.dp),
-				verticalAlignment = Alignment.CenterVertically
-			) {
-				
-				Column(
-					modifier = Modifier.weight(1f),
-				) {
-					
-					Text(
-						text = producstList.title,
-						fontSize = titleSize,
-						maxLines = 1,
-						overflow = TextOverflow.Ellipsis,
-						fontWeight = FontWeight.Bold
-					)
-					
-					Text(
-						text = producstList.description, fontSize = titleSize,
-						maxLines = 1,
-						overflow = TextOverflow.Ellipsis,
-						fontWeight = FontWeight.SemiBold
-					)
-					
-					Row(
-						modifier = Modifier.fillMaxWidth(),
-						horizontalArrangement = Arrangement.SpaceBetween,
-						verticalAlignment = Alignment.CenterVertically
-					) {
-						Text(
-							text = "R$ $newPrice",
-							fontSize = titleSize
-						)
-						Icon(
-							imageVector = if(producstList.favorite) Icons.Default.FavoriteBorder else Icons.Default.FavoriteBorder,
-							contentDescription = "Favoritar",
-							modifier = Modifier.size(iconsize)
-						)
-					}
-					
 				}
 			}
 			
+			Column(
+				modifier = Modifier.padding(10.dp)
+			) {
+				
+				Text(
+					text = producstList.title,
+					fontSize = (titleSize.value + 1).sp,
+					fontWeight = FontWeight.Bold,
+					maxLines = 1,
+					overflow = TextOverflow.Ellipsis
+				)
+				
+				Spacer(modifier = Modifier.height(4.dp))
+				
+				Text(
+					text = producstList.description,
+					fontSize = (titleSize.value - 1).sp,
+					color = Color.Gray,
+					maxLines = 2,
+					overflow = TextOverflow.Ellipsis
+				)
+				
+				Spacer(modifier = Modifier.height(8.dp))
+				
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					horizontalArrangement = Arrangement.SpaceBetween,
+					verticalAlignment = Alignment.CenterVertically
+				) {
+					
+					Text(
+						text = "R$ $newPrice",
+						fontSize = titleSize,
+						fontWeight = FontWeight.Bold,
+						color = Color(0xFF2E7D32)
+					)
+					
+					Icon(
+						imageVector = if (producstList.favorite) Icons.Default.FavoriteBorder else Icons
+							.Default.Favorite,
+						contentDescription = null,
+						tint = iconsColor,
+						modifier = Modifier
+							.size(20.dp)
+							.clickable {
+								onAddToFavorite(producstList)
+							}
+					)
+				}
+			}
 		}
 	}
-}
-
-
-@Preview(
-	name = "Galaxy A07",
-	showBackground = true,
-	widthDp = 360,
-	heightDp = 800
-)
-@Composable
-fun PreviewA07() {
-	Recomendations(
-		producstList = ProducstList(
-			id = 1,
-			title = "Rosa Vermelha",
-			price = 29.90f,
-			description = "espiro que desce como fogo",
-			typeMedia = "Flores",
-			img = "https://picsum.photos/300/300"
-		)
-	)
-}
-
-@Preview(
-	name = "Celular Grande",
-	showBackground = true,
-	widthDp = 411,
-	heightDp = 891
-)
-@Composable
-fun PreviewPhone() {
-	Recomendations(
-		producstList = ProducstList(
-			id = 1,
-			title = "Orquídea Premium",
-			price = 49.90f,
-			description = "vem como em ppenttecostes",
-			typeMedia = "Flores",
-			img = "https://picsum.photos/300/300"
-		)
-	)
-}
-
-@Preview(
-	name = "Tablet",
-	showBackground = true,
-	widthDp = 800,
-	heightDp = 1280
-)
-@Composable
-fun PreviewTablet() {
-	Recomendations(
-		producstList = ProducstList(
-			id = 1,
-			title = "Samambaia Gigante",
-			price = 89.90f,
-			description = "e enche-me de noov",
-			typeMedia = "Flores",
-			img = "https://picsum.photos/300/300"
-		)
-	)
 }

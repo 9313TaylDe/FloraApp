@@ -7,7 +7,7 @@ import com.example.floraapp.repository.CategoryConverter
 
 @Database(
 	entities = [ProducstList::class],
-	version = 1,
+	version = 2,
 	exportSchema = false
 )
 

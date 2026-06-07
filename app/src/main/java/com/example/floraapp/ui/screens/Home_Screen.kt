@@ -14,22 +14,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowCircleRight
 import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -45,79 +42,58 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.floraapp.R
 import com.example.floraapp.repository.ProductViewModel
+import com.example.floraapp.rotas.Rotas
 import com.example.floraapp.ui.colors.fundocardsuggestions
 import com.example.floraapp.ui.colors.iconsColor
 import com.example.floraapp.ui.colors.textFieldBorderColor
 import com.example.floraapp.ui.colors.titleColor
 import com.example.floraapp.ui.components.BoasVindas
 
+
 @Composable
 fun Home_Screen(
-	productViewModel: ProductViewModel? = null,
-	onHome: () -> Unit = {},
-	onFavoritos: () -> Unit = {},
-	onAdd: () -> Unit = {},
-	onCuidados: () -> Unit = {},
-	onPerfil: () -> Unit = {}
+	productViewModel: ProductViewModel,
+	onDetails: (Int) -> Unit,
+	onAdd: () -> Unit,
+	onHome: () -> Unit,
+	onFavorites: () -> Unit,
+	onCuidados: () -> Unit,
+	onPerfil: () -> Unit
 ) {
-	val botoes = listOf(
-		"HOME",
-		"FAVORITES",
-		"ADD",
-		"CUIDADOS",
-		"PERFIL"
-	)
 	
+	val produtos by productViewModel.pegarTodosProdutos
+		.collectAsState()
 	
-	fun iconeDoBotao(botao: String) = when (botao) {
-		"HOME" -> Icons.Default.Home
-		"FAVORITES" -> Icons.Default.Favorite
-		"CUIDADOS" -> Icons.Default.Eco
-		"PERFIL" -> Icons.Default.Person
+	var searching by remember { mutableStateOf("") }
+	
+	val categorias = listOf("Internas", "Externas", "Suculentas", "Flores")
+	
+	fun iconeDoBotao(rota: String) = when (rota) {
+		Rotas.HOME -> Icons.Default.Home
+		Rotas.FAVORITES -> Icons.Default.Favorite
+		Rotas.CUIDADOS -> Icons.Default.Eco
+		Rotas.PROFILE -> Icons.Default.Person
 		else -> Icons.Default.Add
 	}
 	
-	val categorias = listOf(
-		"Internas",
-		"Externas",
-		"Suculentas",
-		"Flores",
-		
-		)
-	
-	fun categoriasIcons(categoria: String): Int {
-		return when (categoria) {
-			"Internas" -> R.drawable.icon1
-			"Externas" -> R.drawable.icon2
-			"Suculenttas" -> R.drawable.icon3
-			"Flores" -> R.drawable.outline_local_florist_24
-			else -> R.drawable.icon4
-		}
-		
+	fun categoriaIcon(cat: String) = when (cat) {
+		"Internas" -> R.drawable.icon1
+		"Externas" -> R.drawable.icon2
+		"Suculentas" -> R.drawable.icon3
+		else -> R.drawable.outline_local_florist_24
 	}
 	
-	val pprodutos = productViewModel
-		?.pegarTodosProdutos
-		?.collectAsState()
-		?.value
-		?: emptyList()
-	
-	
-	var searching by remember { mutableStateOf("") }
 	Scaffold(
-		modifier = Modifier
-			.fillMaxSize()
-			.statusBarsPadding(),
+		modifier = Modifier.fillMaxSize(),
+		
 		topBar = {
 			Row(
 				modifier = Modifier
@@ -125,25 +101,22 @@ fun Home_Screen(
 					.padding(16.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
-				Column(
-					modifier = Modifier
-						.weight(1f)
-						.height(30.dp)
-				) {
+				Column(modifier = Modifier.weight(1f)) {
 					BoasVindas(
 						title = "Expedito",
 						textColor = titleColor,
 						textWeight = 17.sp
 					)
 				}
+				
 				Icon(
 					imageVector = Icons.Default.NotificationsNone,
 					contentDescription = null,
 					modifier = Modifier.size(28.dp)
 				)
-				
 			}
 		},
+		
 		bottomBar = {
 			Row(
 				modifier = Modifier
@@ -151,213 +124,163 @@ fun Home_Screen(
 					.padding(bottom = 20.dp),
 				horizontalArrangement = Arrangement.SpaceBetween
 			) {
-				botoes.forEach { bootos ->
+				
+				listOf(
+					Rotas.HOME,
+					Rotas.FAVORITES,
+					Rotas.ADD,
+					Rotas.CUIDADOS,
+					Rotas.PROFILE
+				).forEach { rota ->
+					
 					Button(
-						colors = ButtonDefaults.buttonColors(
-							containerColor = Color.Transparent
-						),
-						modifier = Modifier.background(Color.Transparent),
+						colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
 						onClick = {
-							when (bootos) {
-								"HOME" -> onHome()
-								"ADD" -> onAdd()
-								"FAVORITES" -> onFavoritos()
-								"CUIDADOS" -> onCuidados()
-								"Perfil" -> onPerfil()
+							when (rota) {
+								Rotas.HOME -> onHome()
+								Rotas.FAVORITES -> onFavorites()
+								Rotas.ADD -> onAdd()
+								Rotas.CUIDADOS -> onCuidados()
+								Rotas.PROFILE -> onPerfil()
 							}
 						}
 					) {
 						Icon(
-							imageVector = iconeDoBotao(bootos),
-							contentDescription = "", tint = Color.Black
+							imageVector = iconeDoBotao(rota),
+							contentDescription = null,
+							tint = Color.Black
 						)
-						
 					}
 				}
 			}
 		}
-	) { paddingValues ->
+	) { padding ->
+		
 		Column(
 			modifier = Modifier
-				.padding(paddingValues)
-				.verticalScroll(rememberScrollState())
-				.padding(10.dp)
+				.padding(padding)
 				.fillMaxSize()
+				.padding(10.dp)
 		) {
+			
 			Box(
-				contentAlignment = Alignment.CenterStart,
 				modifier = Modifier
 					.fillMaxWidth()
-					.border(
-						1.dp,
-						textFieldBorderColor,
-						RoundedCornerShape(15.dp)
-					)
+					.border(1.dp, textFieldBorderColor, RoundedCornerShape(15.dp))
+					.padding(8.dp)
 			) {
-				Icon(
-					imageVector = Icons.Default.Search,
-					contentDescription = "Ícone busca",
-					tint = iconsColor,
-					modifier = Modifier
-						.padding(start = 5.dp)
-						.size(30.dp)
-				)
 				TextField(
+					value = searching,
+					onValueChange = { searching = it },
+					placeholder = { Text("Buscar plantas") },
 					colors = TextFieldDefaults.colors(
 						focusedContainerColor = Color.Transparent,
 						unfocusedContainerColor = Color.Transparent,
 						disabledContainerColor = Color.Transparent,
 						focusedIndicatorColor = Color.Transparent,
-						unfocusedIndicatorColor = Color.Transparent,
-						disabledIndicatorColor = Color.Transparent
-					
+						unfocusedIndicatorColor = Color.Transparent
 					),
-					modifier = Modifier.padding(start = 22.dp),
-					value = searching,
-					onValueChange = { searching = it },
-					placeholder = { Text("Buscar plantas") }
+					modifier = Modifier.fillMaxWidth()
 				)
 			}
-			Spacer(modifier = Modifier.height(5.dp))
+			
+			Spacer(modifier = Modifier.height(12.dp))
+			
 			Row(
 				modifier = Modifier
 					.fillMaxWidth()
 					.height(150.dp)
-					.background(
-						fundocardsuggestions,
-						RoundedCornerShape(25.dp)
-					),
-				horizontalArrangement = Arrangement.SpaceBetween,
+					.background(fundocardsuggestions, RoundedCornerShape(25.dp))
+					.padding(12.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
-				Column(
-					modifier = Modifier
-						.padding(15.dp)
-						.fillMaxWidth(0.38f)
-				) {
+				Column(modifier = Modifier.weight(1f)) {
 					Text(
-						text = "Plantas transforman ambientes",
-						fontSize = 20.sp, color = Color.White
+						"Plantas transformam ambientes",
+						color = Color.White,
+						fontSize = 18.sp
 					)
-					Spacer(modifier = Modifier.height(15.dp))
-					Row(
-						modifier = Modifier
-							.padding(5.dp)
-							.fillMaxWidth(),
-						horizontalArrangement = Arrangement.SpaceBetween,
-						verticalAlignment = Alignment.CenterVertically
-					) {
-						Text(
-							text = "Veja nossas sugestões",
-							fontSize = 11.sp,
-							letterSpacing = 1.sp,
-							color = Color.White,
-							modifier = Modifier.fillMaxWidth(0.67f)
-						
-						)
-						Spacer(modifier = Modifier.width(5.dp))
-						
-						Icon(
-							imageVector = Icons.Default.ArrowCircleRight,
-							tint = Color.White,
-							modifier = Modifier.size(55.dp),
-							contentDescription = "Icone de ver " +
-									"sugestoes"
-						)
-					}
+					Text(
+						"Veja nossas sugestões",
+						color = Color.White,
+						fontSize = 12.sp
+					)
 				}
+				
 				Image(
-					modifier = Modifier
-						.size(210.dp)
-						.background(Color.Transparent),
-					contentScale = ContentScale.Crop,
 					painter = painterResource(R.drawable.sugggestionsplantcards),
-					contentDescription = null
+					contentDescription = null,
+					modifier = Modifier.size(120.dp),
+					contentScale = ContentScale.Crop
 				)
 			}
-			Spacer(modifier = Modifier.height(25.dp))
-			Column() {
-				Row() {
-					Text(
-						text = "Categorias",
-						fontSize = 18.sp,
-						fontWeight = FontWeight.Bold,
-						color = Color.Black
-					)
-					Spacer(modifier = Modifier.weight(1f))
-					Text(
-						text = "Ver todas",
-						fontSize = 16.sp,
-						fontWeight = FontWeight.Bold,
-						color = iconsColor
-					)
-				}
-				Spacer(modifier = Modifier.height(3.dp))
-				
-				LazyRow(
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(8.dp),
-					horizontalArrangement = Arrangement.SpaceBetween
-				) {
-					items(categorias) { cattegs ->
-						Column(
-							modifier = Modifier
-								.width(75.dp)
-								.height(65.dp)
-								.shadow(
-									elevation = 8.dp,
-									shape = RoundedCornerShape(10.dp),
-									ambientColor = Color.Gray,
-									spotColor = Color.Gray
-								)
-								.background(
-									color = Color.White,
-									shape = RoundedCornerShape(10.dp)
-								)
-								.border(
-									width = 1.dp,
-									color = iconsColor,
-									shape = RoundedCornerShape(10.dp)
-								),
-							verticalArrangement = Arrangement.Center,
-							horizontalAlignment = Alignment.CenterHorizontally
-						) {
-							Icon(
-								painter = painterResource(categoriasIcons(cattegs)),
-								contentDescription = "Icones categorias",
-								modifier = Modifier.size(45.dp),
-								tint = iconsColor
-							)
-							Text(
-								text = cattegs, fontSize = 10.sp, fontWeight = FontWeight.SemiBold
-							)
-						}
+			
+			Spacer(modifier = Modifier.height(20.dp))
+			
+			Row(verticalAlignment = Alignment.CenterVertically) {
+				Text("Categorias", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+				Spacer(modifier = Modifier.weight(1f))
+				Text("Ver todos", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+			}
+			LazyRow {
+				items(categorias) { cat ->
+					Column(
+						modifier = Modifier
+							.padding(6.dp)
+							.size(80.dp)
+							.background(Color.White, RoundedCornerShape(10.dp))
+							.border(1.dp, iconsColor, RoundedCornerShape(10.dp)),
+						horizontalAlignment = Alignment.CenterHorizontally,
+						verticalArrangement = Arrangement.Center
+					) {
+						Icon(
+							painter = painterResource(categoriaIcon(cat)),
+							contentDescription = null,
+							tint = iconsColor,
+							modifier = Modifier.size(30.dp)
+						)
+						Text(cat, fontSize = 10.sp)
 					}
 				}
 			}
 			
-			if (pprodutos.isEmpty()) {
+			Spacer(modifier = Modifier.height(20.dp))
+			
+			val filtered = produtos.filter {
+				it.title.contains(searching, ignoreCase = true)
+			}
+			
+			if (filtered.isEmpty()) {
 				Text("Nenhum produto para exibir")
 			} else {
-				LazyRow(
+				
+				LazyVerticalGrid(
+					columns = GridCells.Fixed(3),
+					modifier = Modifier
+						.fillMaxWidth()
+						.height(800.dp),
+					verticalArrangement = Arrangement.spacedBy(8.dp),
+					horizontalArrangement = Arrangement.spacedBy(8.dp)
 				) {
-					items(pprodutos) { prods ->
+					items(
+						items = filtered,
+						key = { it.id }
+					) { produto ->
+						
 						Recomendations(
-							prods
+							producstList = produto,
+							irparaDetails = onDetails,
+							onAddToFavorite = { planta ->
+								productViewModel.Atualizar(
+									planta.copy(
+										favorite = !planta.favorite
+									)
+								)
+							}
 						)
 					}
 				}
 			}
 		}
 	}
-}
-
-@Preview
-@Composable
-fun prevedond() {
-	Home_Screen(
-	
-	)
-	
 }

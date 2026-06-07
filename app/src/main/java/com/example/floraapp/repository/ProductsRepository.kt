@@ -35,11 +35,18 @@ class ProductsRepository(private val prods: DAOProduct) : ViewModel() {
 			prods.inserir(producstList)
 		}
 	}
-	
-	
-	fun PegarTodos(){
-		prods.pegarTodos()
+		
+		fun pegarPoriD(id: Int) {
+			viewModelScope.launch {
+				prods.pegarPorId(id)
+			}
+			
+		}
+		
+		
+		fun PegarTodos() {
+			prods.pegarTodos()
+		}
 	}
-}
 
 // VERSION 2, AUTOMATIC CODING, WITHOUT HELP FROM CHATGPT

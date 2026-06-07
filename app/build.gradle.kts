@@ -70,6 +70,8 @@ dependencies {
 	implementation("androidx.navigation:navigation-compose:2.7.7")
 	implementation(libs.androidx.compose.ui.graphics)
 	implementation(libs.androidx.compose.foundation.layout)
+	implementation(libs.androidx.compose.ui)
+	implementation(libs.androidx.room.ktx)
 	
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	
