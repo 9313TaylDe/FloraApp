@@ -72,6 +72,7 @@ dependencies {
 	implementation(libs.androidx.compose.foundation.layout)
 	implementation(libs.androidx.compose.ui)
 	implementation(libs.androidx.room.ktx)
+	implementation(libs.androidx.compose.material3)
 	
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	

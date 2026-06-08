@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,9 +24,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowCircleRight
 import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -50,13 +54,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.floraapp.R
 import com.example.floraapp.repository.ProductViewModel
-import com.example.floraapp.rotas.Rotas
+import com.example.floraapp.ui.colors.Gray
 import com.example.floraapp.ui.colors.fundocardsuggestions
 import com.example.floraapp.ui.colors.iconsColor
 import com.example.floraapp.ui.colors.textFieldBorderColor
 import com.example.floraapp.ui.colors.titleColor
 import com.example.floraapp.ui.components.BoasVindas
-
 
 @Composable
 fun Home_Screen(
@@ -65,12 +68,11 @@ fun Home_Screen(
 	onAdd: () -> Unit,
 	onHome: () -> Unit,
 	onFavorites: () -> Unit,
-	onCuidados: () -> Unit,
+	onSobre: () -> Unit,
 	onPerfil: () -> Unit
 ) {
 	
-	val produtos by productViewModel.pegarTodosProdutos
-		.collectAsState()
+	val produtos by productViewModel.pegarTodosProdutos.collectAsState()
 	
 	var searching by remember { mutableStateOf("") }
 	
@@ -79,7 +81,7 @@ fun Home_Screen(
 	fun iconeDoBotao(rota: String) = when (rota) {
 		Rotas.HOME -> Icons.Default.Home
 		Rotas.FAVORITES -> Icons.Default.Favorite
-		Rotas.CUIDADOS -> Icons.Default.Eco
+		Rotas.SOBRE -> Icons.Default.Info
 		Rotas.PROFILE -> Icons.Default.Person
 		else -> Icons.Default.Add
 	}
@@ -92,7 +94,7 @@ fun Home_Screen(
 	}
 	
 	Scaffold(
-		modifier = Modifier.fillMaxSize(),
+		modifier = Modifier.statusBarsPadding(),
 		
 		topBar = {
 			Row(
@@ -124,12 +126,11 @@ fun Home_Screen(
 					.padding(bottom = 20.dp),
 				horizontalArrangement = Arrangement.SpaceBetween
 			) {
-				
 				listOf(
 					Rotas.HOME,
 					Rotas.FAVORITES,
 					Rotas.ADD,
-					Rotas.CUIDADOS,
+					Rotas.SOBRE,
 					Rotas.PROFILE
 				).forEach { rota ->
 					
@@ -140,7 +141,7 @@ fun Home_Screen(
 								Rotas.HOME -> onHome()
 								Rotas.FAVORITES -> onFavorites()
 								Rotas.ADD -> onAdd()
-								Rotas.CUIDADOS -> onCuidados()
+								Rotas.SOBRE -> onSobre()
 								Rotas.PROFILE -> onPerfil()
 							}
 						}
@@ -154,6 +155,7 @@ fun Home_Screen(
 				}
 			}
 		}
+	
 	) { padding ->
 		
 		Column(
@@ -163,33 +165,28 @@ fun Home_Screen(
 				.padding(10.dp)
 		) {
 			
-			Box(
+			TextField(
+				value = searching,
+				onValueChange = { searching = it },
+				placeholder = { Text("Buscar plantas") },
 				modifier = Modifier
 					.fillMaxWidth()
-					.border(1.dp, textFieldBorderColor, RoundedCornerShape(15.dp))
-					.padding(8.dp)
-			) {
-				TextField(
-					value = searching,
-					onValueChange = { searching = it },
-					placeholder = { Text("Buscar plantas") },
-					colors = TextFieldDefaults.colors(
-						focusedContainerColor = Color.Transparent,
-						unfocusedContainerColor = Color.Transparent,
-						disabledContainerColor = Color.Transparent,
-						focusedIndicatorColor = Color.Transparent,
-						unfocusedIndicatorColor = Color.Transparent
-					),
-					modifier = Modifier.fillMaxWidth()
+					.border(1.dp, textFieldBorderColor, RoundedCornerShape(12.dp)),
+				colors = TextFieldDefaults.colors(
+					focusedContainerColor = Color.Transparent,
+					unfocusedContainerColor = Color.Transparent,
+					disabledContainerColor = Color.Transparent,
+					focusedIndicatorColor = Color.Transparent,
+					unfocusedIndicatorColor = Color.Transparent
 				)
-			}
+			)
 			
-			Spacer(modifier = Modifier.height(12.dp))
+			Spacer(Modifier.height(10.dp))
 			
 			Row(
 				modifier = Modifier
 					.fillMaxWidth()
-					.height(150.dp)
+					.height(180.dp)
 					.background(fundocardsuggestions, RoundedCornerShape(25.dp))
 					.padding(12.dp),
 				verticalAlignment = Alignment.CenterVertically
@@ -200,11 +197,22 @@ fun Home_Screen(
 						color = Color.White,
 						fontSize = 18.sp
 					)
-					Text(
-						"Veja nossas sugestões",
-						color = Color.White,
-						fontSize = 12.sp
-					)
+					
+					Spacer(modifier = Modifier.height(12.dp))
+					
+					Row(verticalAlignment = Alignment.CenterVertically) {
+						Text(
+							"Veja nossas sugestões",
+							color = Color.White,
+							fontSize = 12.sp
+						)
+						Spacer(modifier = Modifier.width(5.dp))
+						Icon(
+							imageVector = Icons.Default.ArrowCircleRight,
+							tint = Color.White,
+							contentDescription = null
+						)
+					}
 				}
 				
 				Image(
@@ -215,13 +223,10 @@ fun Home_Screen(
 				)
 			}
 			
-			Spacer(modifier = Modifier.height(20.dp))
+			Spacer(modifier = Modifier.height(15.dp))
 			
-			Row(verticalAlignment = Alignment.CenterVertically) {
-				Text("Categorias", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-				Spacer(modifier = Modifier.weight(1f))
-				Text("Ver todos", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-			}
+			Text("Categorias", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+			
 			LazyRow {
 				items(categorias) { cat ->
 					Column(
@@ -244,28 +249,32 @@ fun Home_Screen(
 				}
 			}
 			
-			Spacer(modifier = Modifier.height(20.dp))
+			Spacer(modifier = Modifier.height(15.dp))
 			
 			val filtered = produtos.filter {
-				it.title.contains(searching, ignoreCase = true)
+				it.title.contains(searching.trim(), ignoreCase = true)
 			}
 			
 			if (filtered.isEmpty()) {
-				Text("Nenhum produto para exibir")
+				
+				Box(
+					modifier = Modifier.fillMaxSize(),
+					contentAlignment = Alignment.Center
+				) {
+					Text("Nenhum produto encontrado")
+				}
+				
 			} else {
 				
 				LazyVerticalGrid(
 					columns = GridCells.Fixed(3),
 					modifier = Modifier
 						.fillMaxWidth()
-						.height(800.dp),
+						.weight(1f),
 					verticalArrangement = Arrangement.spacedBy(8.dp),
 					horizontalArrangement = Arrangement.spacedBy(8.dp)
 				) {
-					items(
-						items = filtered,
-						key = { it.id }
-					) { produto ->
+					items(filtered, key = { it.id }) { produto ->
 						
 						Recomendations(
 							producstList = produto,
