@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -27,7 +28,7 @@ fun BoasVindas(
 	title: String, textColor: Color, textWeight:  TextUnit
 ) {
 	Column(
-		modifier = Modifier.height(60.dp).background(White)
+		modifier = Modifier.background(White)
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically
@@ -45,8 +46,9 @@ fun BoasVindas(
 				tint = Color.Green, modifier = Modifier.size(18.dp)
 			)
 		}
+		Spacer(Modifier.height(2.dp))
 		Text(
-			fontSize = 10.sp,
+			fontSize = 13.sp,
 			text = "Que bom te ver por aqui!"
 		)
 	}

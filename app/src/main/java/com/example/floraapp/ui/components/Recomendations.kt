@@ -126,7 +126,8 @@ fun Recomendations(
 					Text(
 						text = producstList.typeMedia,
 						color = Color.White,
-						fontSize = 10.sp
+						fontSize = 10.sp,
+						fontWeight = FontWeight.Bold
 					)
 				}
 			}

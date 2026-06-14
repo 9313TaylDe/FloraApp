@@ -1,6 +1,5 @@
 package com.example.floraapp.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,18 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -69,71 +67,86 @@ fun Details_Screen(
 	
 	val newPreco = String.format("%.2f", produtoAtual.price)
 	
-	Box(modifier = Modifier.fillMaxSize()) {
-		
-		AsyncImage(
-			model = imgView,
-			contentDescription = produtoAtual.title,
-			modifier = Modifier
-				.fillMaxWidth()
-				.fillMaxHeight(0.55f),
-			contentScale = ContentScale.Crop
-		)
-		
-		IconButton(
-			onClick = voltar,
-			modifier = Modifier
-				.padding(20.dp)
-				.size(48.dp)
-				.background(Color.White, CircleShape)
-				.align(Alignment.TopStart)
-		) {
-			Icon(Icons.Default.ArrowBack, null)
+	Scaffold(
+		modifier = Modifier
+			.statusBarsPadding()
+			.padding(14.dp),
+		topBar = {
+			Row(
+				modifier = Modifier.padding(horizontal = 6.dp),
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				Icon(
+					imageVector = Icons.Default.ArrowBackIosNew,
+					contentDescription = "voltar para a tela home",
+					modifier = Modifier.clickable { voltar() },
+					
+					)
+				Text(
+					"Detalhes do produto"
+				)
+			}
 		}
+	) { paddingValues ->
 		
-		Card(
+		Box(
 			modifier = Modifier
-				.fillMaxWidth()
-				.fillMaxHeight(0.58f)
-				.align(Alignment.BottomCenter),
-			shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+				.padding(paddingValues)
+				.fillMaxSize()
 		) {
-			
-			Column(
+			AsyncImage(
+				model = imgView,
+				contentDescription = produtoAtual.title,
 				modifier = Modifier
-					.fillMaxSize()
-					.padding(20.dp)
+					.fillMaxWidth()
+					.fillMaxHeight(0.55f),
+				contentScale = ContentScale.Crop
+			)
+			
+			Card(
+				modifier = Modifier
+					.fillMaxWidth()
+					.fillMaxHeight(0.58f)
+					.align(Alignment.BottomCenter),
+				shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
 			) {
 				
-				Text(produtoAtual.title, fontSize = 28.sp)
-				
-				Text("R$ $newPreco", color = Color(0xFF2E7D32))
-				
-				Spacer(Modifier.weight(1f))
-				
-				Row(horizontalArrangement = Arrangement.SpaceBetween) {
+				Column(
+					modifier = Modifier
+						.fillMaxSize()
+						.padding(20.dp)
+				) {
 					
-					Button(
-						onClick = {},
-						modifier = Modifier.height(60.dp)
-					) {
-						Icon(Icons.Default.ShoppingCart, null)
-						Spacer(Modifier.width(8.dp))
-						Text("Carrinho")
-					}
+					Text(produtoAtual.title, fontSize = 28.sp)
 					
-					Spacer(Modifier.width(10.dp))
+					Text("R$ $newPreco", color = Color(0xFF2E7D32))
 					
-					Button(
-						onClick = {},
-						modifier = Modifier.height(60.dp)
-					) {
-						Text(
-							text = "Editar",
-							modifier = Modifier.clickable {
-								irparaAtualizar()
-							}
-						)
+					Spacer(Modifier.weight(1f))
+					
+					Row(horizontalArrangement = Arrangement.SpaceBetween) {
+						
+						Button(
+							onClick = {},
+							modifier = Modifier.height(60.dp)
+						) {
+							Icon(Icons.Default.ShoppingCart, null)
+							Spacer(Modifier.width(8.dp))
+							Text("Carrinho")
+						}
+						
+						Spacer(Modifier.width(10.dp))
+						
+						Button(
+							onClick = {},
+							modifier = Modifier.height(60.dp)
+						) {
+							Text(
+								text = "Editar",
+								modifier = Modifier.clickable {
+									irparaAtualizar()
+								}
+							)
+						}
 					}
 				}
 			}

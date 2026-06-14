@@ -1,6 +1,7 @@
 package com.example.floraapp.ui.screens
 
 import Recomendations
+import Rotas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +26,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowCircleRight
-import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -54,7 +54,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.floraapp.R
 import com.example.floraapp.repository.ProductViewModel
-import com.example.floraapp.ui.colors.Gray
 import com.example.floraapp.ui.colors.fundocardsuggestions
 import com.example.floraapp.ui.colors.iconsColor
 import com.example.floraapp.ui.colors.textFieldBorderColor
@@ -101,7 +100,8 @@ fun Home_Screen(
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(16.dp),
-				verticalAlignment = Alignment.CenterVertically
+				verticalAlignment = Alignment.CenterVertically,
+				horizontalArrangement = Arrangement.Center
 			) {
 				Column(modifier = Modifier.weight(1f)) {
 					BoasVindas(

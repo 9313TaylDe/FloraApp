@@ -1,6 +1,7 @@
 package com.example.floraapp.ui.screens
 
 import Recomendations
+import Rotas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -56,6 +57,7 @@ fun Favorite_Screen(
 	Scaffold(
 		topBar = {
 			Row(
+				modifier = Modifier.padding(horizontal = 6.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
 				Icon(
@@ -110,7 +112,7 @@ fun Favorite_Screen(
 		},
 		modifier = Modifier
 			.statusBarsPadding()
-			.fillMaxSize()
+			.padding(14.dp)
 	) { paddingValues ->
 		
 		if (filtered.isEmpty()) {
@@ -119,7 +121,7 @@ fun Favorite_Screen(
 				modifier = Modifier
 					.fillMaxSize()
 					.padding(paddingValues),
-				contentAlignment = androidx.compose.ui.Alignment.Center
+				contentAlignment = Alignment.Center
 			) {
 				Text("Você ainda não tem favoritos ❤️")
 			}

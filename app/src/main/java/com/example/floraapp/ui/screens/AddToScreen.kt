@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -96,22 +97,18 @@ fun AddToScreen(
 	Scaffold(
 		modifier = Modifier
 			.statusBarsPadding()
-			.padding(top = 12.dp),
+			.padding(14.dp),
 		topBar = {
 			Row(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(horizontal = 16.dp),
+				modifier = Modifier.padding(horizontal = 6.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
-				
 				Icon(
 					imageVector = Icons.Default.ArrowBackIosNew,
-					contentDescription = "Voltar",
-					modifier = Modifier
-						.size(20.dp)
-						.clickable { onBack() }
-				)
+					contentDescription = "voltar para a tela home",
+					modifier = Modifier.clickable { onBack() },
+					
+					)
 				
 				Text(
 					text = "Adicionar planta",
