@@ -3,19 +3,20 @@ package com.example.floraapp.data
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.floraapp.repository.CategoryConverter
+import com.example.floraapp.data.dao.PlantaDao
+import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.repository.PlantaCategoryConverter
 
 @Database(
-	entities = [ProducstList::class],
-	version = 2,
+	entities = [Plantas::class],
+	version = 1,
 	exportSchema = false
 )
 
 @TypeConverters(
-	CategoryConverter::class
+	PlantaCategoryConverter::class
 )
 
 abstract class AppsDataBases : RoomDatabase() {
-	abstract fun getAll(): DAOProduct
+	abstract fun getAll(): PlantaDao
 }
-// VERSION 2, AUTOMATIC CODING, WITHOUT HELP FROM CHATGPT

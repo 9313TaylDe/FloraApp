@@ -2,13 +2,13 @@ package com.example.floraapp.repository
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.floraapp.data.DAOProduct
+import com.example.floraapp.data.dao.PlantaDao
 
-class ProductFactory(private val factory: DAOProduct) : ViewModelProvider.Factory {
+class PlantaFactory(private val factory: PlantaDao) : ViewModelProvider.Factory {
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
-		if (modelClass.isAssignableFrom(ProductViewModel::class.java)) {
+		if (modelClass.isAssignableFrom(PlantaViewModel::class.java)) {
 			@Suppress("UNCHECKED_CAST")
-			return ProductViewModel(factory) as T
+			return PlantaViewModel(factory) as T
 		}
 		throw IllegalArgumentException(
 			"ViewModel desconhecido"

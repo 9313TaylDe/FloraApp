@@ -26,8 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.floraapp.data.ProducstList
-import com.example.floraapp.repository.ProductViewModel
+import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.repository.PlantaViewModel
 import com.example.floraapp.ui.components.AppBottomBar
 
 @Composable
@@ -37,7 +37,7 @@ fun Favorite_Screen(
 	onAdd: () -> Unit,
 	onSobre: () -> Unit,
 	onPerfil: () -> Unit,
-	viewModel: ProductViewModel
+	viewModel: PlantaViewModel
 ) {
 	val selecionados = remember { mutableStateListOf<Int>() }
 	val selecionadosState = selecionados.toList()
@@ -45,7 +45,7 @@ fun Favorite_Screen(
 	val prod by viewModel.pegarTodosProdutos.collectAsState()
 	val filtered = prod.filter { it.favorite }
 	
-	fun toggleitem(item: ProducstList) {
+	fun toggleitem(item: Plantas) {
 		val id = item.id
 		if (selecionados.contains(id)) {
 			selecionados.remove(id)

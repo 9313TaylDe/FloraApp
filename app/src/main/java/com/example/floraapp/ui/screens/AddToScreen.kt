@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,14 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.floraapp.R
-import com.example.floraapp.data.ProducstList
+import com.example.floraapp.data.entitys.Plantas
 import com.example.floraapp.ui.colors.DarkGreen
 
 @Composable
 fun AddToScreen(
-	produto: ProducstList? = null,
+	produto: Plantas? = null,
 	onBack: () -> Unit,
-	onSave: (ProducstList) -> Unit
+	onSave: (Plantas) -> Unit
 ) {
 	
 	var nomePlanta by rememberSaveable {
@@ -296,7 +295,7 @@ fun AddToScreen(
 								nomePlanta.isNotEmpty() &&
 								imagemSelecionada != null,
 					onClick = {
-						val newItem = ProducstList(
+						val newItem = Plantas(
 							id = produto?.id ?: 0,
 							title = nomePlanta,
 							description = observacoes,

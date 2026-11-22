@@ -4,25 +4,18 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.room.Room
 import com.example.floraapp.data.AppsDataBases
-import com.example.floraapp.data.ProducstList
-import com.example.floraapp.repository.ProductFactory
-import com.example.floraapp.repository.ProductViewModel
+import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.repository.PlantaFactory
+import com.example.floraapp.repository.PlantaViewModel
 import com.example.floraapp.ui.screens.AddToScreen
 import com.example.floraapp.ui.screens.Details_Screen
 import com.example.floraapp.ui.screens.Favorite_Screen
@@ -48,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 		lifecycleScope.launch {
 			if (dao.pegarTodos().first().isEmpty()) {
 				dao.inserir(
-					ProducstList(
+					Plantas(
 						title = "Jiboia",
 						description = "Planta resistente",
 						price = 29.90f,
@@ -61,8 +54,8 @@ class MainActivity : AppCompatActivity() {
 		
 		setContent {
 			
-			val viewmodel: ProductViewModel = viewModel(
-				factory = ProductFactory(dao)
+			val viewmodel: PlantaViewModel = viewModel(
+				factory = PlantaFactory(dao)
 			)
 			
 			val navController = rememberNavController()
