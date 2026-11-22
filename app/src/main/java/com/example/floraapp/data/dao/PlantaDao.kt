@@ -34,7 +34,7 @@ interface PlantaDao {
     suspend fun pegarPorTreledId(trefledId: Int): Plantas?
 
     @Query("SELECT * FROM PLANTAS WHERE title LIKE '%' || :title || '%' ")
-    suspend fun searchPlantas(title: String): Flow<List<Plantas>>
+     fun searchPlantas(title: String): Flow<List<Plantas>>
 
     @Query("UPDATE Plantas SET favorite = :favorite WHERE id = :id")
     suspend fun updateFavorite(id: Int, favorite: Boolean)

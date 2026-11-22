@@ -18,7 +18,7 @@ class PlantaRepositoryRemote(
 
     private val apiToken = BuildConfig.TREFLE_API_TOKEN
 
-    override suspend fun observeAll(): Flow<List<PlantasModel>> =
+    override fun observeAll(): Flow<List<PlantasModel>> =
         daoProduct.pegarTodos().map { list -> list.map { it.toDomain() } }
 
     override suspend fun searchPlantas(search: String): List<PlantasModel> {
@@ -31,22 +31,40 @@ class PlantaRepositoryRemote(
         }
     }
 
-    override suspend fun refresh() = Unit
+    override suspend fun refresh(){
+        val response = apiService.getPlants(token = apiToken)
+
+        response.data.forEach { planta ->
+            val plantaApi = planta.toDomain()
+
+            val plantaExistente = plantaApi.trefleId?.let { trefleID ->
+                daoProduct.pegarPorTreledId(trefleID)
+            }
+
+            val planatAtualizada = plantaApi.copy(
+                id = plantaExistente?.id ?: 0,
+                favorite = plantaExistente?.favorite ?: false,
+                isCustom = plantaExistente?.isCustom ?: false
+            )
+            daoProduct.inserir(planatAtualizada.toEntity())
+        }
+    }
 
 
 //    ROOM
 
-    suspend fun observeById(id: Int): Flow<PlantasModel?> {
+    override fun observeById(id: Int): Flow<PlantasModel?> {
         return daoProduct.pegarPorId(id).map { planta ->
             planta?.toDomain()
         }
     }
 
-    suspend fun refreshRoom(){
+    suspend fun refreshRoom() {
         val apiResponse = apiService.getPlants(token = apiToken)
 
 
     }
+
     override suspend fun insertPlanta(plantas: PlantasModel) {
         daoProduct.inserir(plantas.toEntity())
     }
@@ -57,5 +75,9 @@ class PlantaRepositoryRemote(
 
     override suspend fun updatePlanta(plantas: PlantasModel) {
         daoProduct.atualizar(plantas.toEntity())
+    }
+
+    override suspend fun updateFavorite(id: Int, favorite: Boolean) {
+        daoProduct.updateFavorite(id, favorite)
     }
 }
