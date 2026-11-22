@@ -2,7 +2,7 @@ package com.example.floraapp.repository
 
 import androidx.room.TypeConverter
 
-class CategoryConverter {
+class PlantaCategoryConverter {
 	@TypeConverter
 	fun fromLista(list: List<String>): String {
 		return list.joinToString(",")

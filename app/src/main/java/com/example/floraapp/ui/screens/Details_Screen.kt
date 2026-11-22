@@ -33,15 +33,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.floraapp.repository.ProductViewModel
+import com.example.floraapp.repository.PlantaViewModel
 
 @Composable
 fun Details_Screen(
-	id: Int,
-	viewmodel: ProductViewModel,
-	voltar: () -> Unit,
-	irparaFavorito: () -> Unit,
-	irparaAtualizar: () -> Unit
+    id: Int,
+    viewmodel: PlantaViewModel,
+    voltar: () -> Unit,
+    irparaFavorito: () -> Unit,
+    irparaAtualizar: () -> Unit
 ) {
 	
 	val produto by viewmodel.pegarPoriD(id)

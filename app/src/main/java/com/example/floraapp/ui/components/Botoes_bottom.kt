@@ -1,4 +1,4 @@
-package com.example.floraapp.data
+package com.example.floraapp.ui.components
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

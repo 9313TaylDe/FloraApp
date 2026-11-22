@@ -32,14 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.floraapp.R
-import com.example.floraapp.data.ProducstList
+import com.example.floraapp.data.entitys.Plantas
 import com.example.floraapp.ui.colors.iconsColor
 
 @Composable
 fun Recomendations(
-	producstList: ProducstList,
+	producstList: Plantas,
 	irparaDetails: (Int) -> Unit,
-	onAddToFavorite: (ProducstList) -> Unit
+	onAddToFavorite: (Plantas) -> Unit
 ) {
 	
 	val precoFormatado = String.format("%.2f", producstList.price)

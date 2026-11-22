@@ -53,7 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.floraapp.R
-import com.example.floraapp.repository.ProductViewModel
+import com.example.floraapp.repository.PlantaViewModel
 import com.example.floraapp.ui.colors.fundocardsuggestions
 import com.example.floraapp.ui.colors.iconsColor
 import com.example.floraapp.ui.colors.textFieldBorderColor
@@ -62,7 +62,7 @@ import com.example.floraapp.ui.components.BoasVindas
 
 @Composable
 fun Home_Screen(
-	productViewModel: ProductViewModel,
+	productViewModel: PlantaViewModel,
 	onDetails: (Int) -> Unit,
 	onAdd: () -> Unit,
 	onHome: () -> Unit,
