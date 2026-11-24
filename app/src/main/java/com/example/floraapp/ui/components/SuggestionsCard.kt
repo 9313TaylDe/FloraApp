@@ -1,48 +1,62 @@
 package com.example.floraapp.ui.components
 
-import com.example.floraapp.R
-import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.domain.model.PlantasModel
 
-fun listaSuggestions(): List<Plantas> {
+fun SuggestionsCard(): List<PlantasModel> {
 	return listOf(
-		Plantas(
+		PlantasModel(
 			title = "Jiboia",
+			scientificName = "Epipremnum aureum",
+			family = "Araceae",
+			genus = "Epipremnum",
 			description = "A Jiboia é uma das plantas ornamentais mais populares para ambientes internos. Possui folhas verdes brilhantes e é muito fácil de cuidar.",
-			price = 39.90f,
-			imgRes = R.drawable.jiboiaplanta,
-			typeMedia = ("Purificadora")
+			imageUrl = null,
+			isCustom = false,
+			favorite = false
 		),
-		
-		Plantas(
-			title = "São Jorge",
-			description = "A Zamioculca é conhecida por sua resistência e facilidade de manutenção.",
-			price = 49.90f,
-			imgRes = R.drawable.jiboiaplanta,
-			typeMedia = ("Purificadora")
-		),
-		
-		Plantas(
+
+		PlantasModel(
 			title = "Espada-de-São-Jorge",
-			description = "A Espada-de-São-Jorge é uma planta resistente e muito utilizada em ambientes internos.",
-			price = 29.90f,
-			imgRes = R.drawable.jiboiaplanta,
-			typeMedia = ("Purificadora")
+			scientificName = "Dracaena trifasciata",
+			family = "Asparagaceae",
+			genus = "Dracaena",
+			description = "A Espada-de-São-Jorge é uma planta resistente, conhecida por suas folhas alongadas e pela facilidade de manutenção. É muito utilizada na decoração de ambientes internos.",
+			imageUrl = null,
+			isCustom = false,
+			favorite = false
 		),
-		
-		Plantas(
+
+		PlantasModel(
 			title = "Costela-de-Adão",
-			description = "A Costela-de-Adão é uma planta tropical exuberante com folhas grandes e recortadas.",
-			price = 59.90f,
-			imgRes = R.drawable.jiboiaplanta,
-			typeMedia = ("Purificadora")
+			scientificName = "Monstera deliciosa",
+			family = "Araceae",
+			genus = "Monstera",
+			description = "A Costela-de-Adão é uma planta tropical conhecida por suas folhas grandes e recortadas. É bastante utilizada na decoração de ambientes internos.",
+			imageUrl = null,
+			isCustom = false,
+			favorite = false
 		),
-		
-		Plantas(
+
+		PlantasModel(
 			title = "Lírio-da-Paz",
-			description = "O Lírio-da-Paz possui flores brancas elegantes e é ótimo para ambientes internos.",
-			price = 44.90f,
-			imgRes = R.drawable.jiboiaplanta,
-			typeMedia = ("Purificadora")
+			scientificName = "Spathiphyllum wallisii",
+			family = "Araceae",
+			genus = "Spathiphyllum",
+			description = "O Lírio-da-Paz possui folhas verdes e flores brancas elegantes. É uma ótima opção para decorar ambientes internos.",
+			imageUrl = null,
+			isCustom = false,
+			favorite = false
+		),
+
+		PlantasModel(
+			title = "Zamioculca",
+			scientificName = "Zamioculcas zamiifolia",
+			family = "Araceae",
+			genus = "Zamioculcas",
+			description = "A Zamioculca é conhecida por sua resistência e facilidade de manutenção. Possui folhas verdes brilhantes e se adapta bem a ambientes internos.",
+			imageUrl = null,
+			isCustom = false,
+			favorite = false
 		)
 	)
 }

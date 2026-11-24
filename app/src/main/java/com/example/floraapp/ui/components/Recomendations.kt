@@ -32,154 +32,138 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.floraapp.R
-import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.domain.model.PlantasModel
 import com.example.floraapp.ui.colors.iconsColor
 
 @Composable
 fun Recomendations(
-	producstList: Plantas,
-	irparaDetails: (Int) -> Unit,
-	onAddToFavorite: (Plantas) -> Unit
+    plantasModel: PlantasModel,
+    irparaDetails: (Int) -> Unit,
+    onAddToFavorite: (PlantasModel) -> Unit
 ) {
-	
-	val precoFormatado = String.format("%.2f", producstList.price)
-	
-	val imageModel = when {
-		producstList.imgURI.isNotEmpty() ->
-			Uri.parse(producstList.imgURI)
-		
-		producstList.imgRes != 0 ->
-			producstList.imgRes
-		
-		else ->
-			R.drawable.outline_local_florist_24
-	}
-	
-	val configuration = LocalConfiguration.current
-	val screenWidth = configuration.screenWidthDp
-	
-	val cardWidth = when {
-		screenWidth < 360 -> 120.dp
-		screenWidth < 411 -> 130.dp
-		screenWidth < 600 -> 140.dp
-		else -> 180.dp
-	}
-	
-	val imageHeight = when {
-		screenWidth < 360 -> 90.dp
-		screenWidth < 411 -> 100.dp
-		screenWidth < 600 -> 110.dp
-		else -> 140.dp
-	}
-	
-	val titleSize = when {
-		screenWidth < 360 -> 10.sp
-		screenWidth < 411 -> 11.sp
-		screenWidth < 600 -> 12.sp
-		else -> 14.sp
-	}
-	
-	Card(
-		modifier = Modifier
-			.width(cardWidth)
-			.padding(6.dp)
-			.clickable {
-				irparaDetails(producstList.id)
-			},
-		shape = RoundedCornerShape(16.dp)
-	) {
-		Column {
-			Box(
-				modifier = Modifier
-					.fillMaxWidth()
-					.height(imageHeight)
-			) {
-				AsyncImage(
-					model = imageModel,
-					contentDescription = producstList.title,
-					modifier = Modifier.fillMaxSize(),
-					contentScale = ContentScale.Crop
-				)
-				Row(
-					modifier = Modifier
-						.align(Alignment.TopStart)
-						.padding(8.dp)
-						.background(
-							Color(0xAA4CAF50),
-							RoundedCornerShape(20.dp)
-						)
-						.padding(
-							horizontal = 8.dp,
-							vertical = 4.dp
-						),
-					verticalAlignment = Alignment.CenterVertically
-				) {
-					Icon(
-						imageVector = Icons.Default.Eco,
-						contentDescription = null,
-						tint = Color.White,
-						modifier = Modifier.size(14.dp)
-					)
-					Spacer(
-						modifier = Modifier.width(4.dp)
-					)
-					Text(
-						text = producstList.typeMedia,
-						color = Color.White,
-						fontSize = 10.sp,
-						fontWeight = FontWeight.Bold
-					)
-				}
-			}
-			Column(
-				modifier = Modifier.padding(10.dp)
-			) {
-				Text(
-					text = producstList.title,
-					fontSize = (titleSize.value + 1).sp,
-					fontWeight = FontWeight.Bold,
-					maxLines = 1,
-					overflow = TextOverflow.Ellipsis
-				)
-				Spacer(
-					modifier = Modifier.height(4.dp)
-				)
-				Text(
-					text = producstList.description,
-					fontSize = (titleSize.value - 1).sp,
-					color = Color.Gray,
-					maxLines = 2,
-					overflow = TextOverflow.Ellipsis
-				)
-				Spacer(
-					modifier = Modifier.height(8.dp)
-				)
-				Row(
-					modifier = Modifier.fillMaxWidth(),
-					horizontalArrangement = Arrangement.SpaceBetween,
-					verticalAlignment = Alignment.CenterVertically
-				) {
-					Text(
-						text = "R$ $precoFormatado",
-						fontSize = titleSize,
-						fontWeight = FontWeight.Bold,
-						color = Color(0xFF2E7D32)
-					)
-					Icon(
-						imageVector = if (producstList.favorite)
-							Icons.Default.Favorite
-						else
-							Icons.Default.FavoriteBorder,
-						contentDescription = "Favorito",
-						tint = iconsColor,
-						modifier = Modifier
-							.size(20.dp)
-							.clickable {
-								onAddToFavorite(producstList)
-							}
-					)
-				}
-			}
-		}
-	}
+
+
+    val imagemMODEL: Any = plantasModel.imageUrl?.takeIf { it.isNotEmpty() }?.let { Uri.parse(it) }
+        ?: R.drawable.outline_local_florist_24
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+
+    val cardWidth = when {
+        screenWidth < 360 -> 120.dp
+        screenWidth < 411 -> 130.dp
+        screenWidth < 600 -> 140.dp
+        else -> 180.dp
+    }
+
+    val imageHeight = when {
+        screenWidth < 360 -> 90.dp
+        screenWidth < 411 -> 100.dp
+        screenWidth < 600 -> 110.dp
+        else -> 140.dp
+    }
+
+    val titleSize = when {
+        screenWidth < 360 -> 10.sp
+        screenWidth < 411 -> 11.sp
+        screenWidth < 600 -> 12.sp
+        else -> 14.sp
+    }
+
+    Card(
+        modifier = Modifier
+            .width(cardWidth)
+            .padding(6.dp)
+            .clickable {
+                irparaDetails(plantasModel.id)
+            },
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageHeight)
+            ) {
+                AsyncImage(
+                    model = imagemMODEL,
+                    contentDescription = plantasModel.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp)
+                        .background(
+                            Color(0xAA4CAF50),
+                            RoundedCornerShape(20.dp)
+                        )
+                        .padding(
+                            horizontal = 8.dp,
+                            vertical = 4.dp
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Eco,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(
+                        modifier = Modifier.width(4.dp)
+                    )
+                    Text(
+                        text = plantasModel.genus?: "",
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Text(
+                    text = plantasModel.title,
+                    fontSize = (titleSize.value + 1).sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
+                Text(
+                    text = plantasModel.family ?: "",
+                    fontSize = (titleSize.value - 1).sp,
+                    color = Color.Gray,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (plantasModel.favorite)
+                            Icons.Default.Favorite
+                        else
+                            Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorito",
+                        tint = iconsColor,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable {
+                                onAddToFavorite(plantasModel)
+                            }
+                    )
+                }
+            }
+        }
+    }
 }

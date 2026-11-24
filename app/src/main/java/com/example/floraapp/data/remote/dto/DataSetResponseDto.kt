@@ -1,4 +1,4 @@
-package com.example.floraapp.data.dto
+package com.example.floraapp.data.remote.dto
 
 data class DataSetResponseDto(
     val plants_count: Int,

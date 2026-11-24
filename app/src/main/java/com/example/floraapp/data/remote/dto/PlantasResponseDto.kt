@@ -1,4 +1,6 @@
-package com.example.floraapp.data.dto
+package com.example.floraapp.data.remote.dto
+
+import com.example.floraapp.data.dto.PlantaDto
 
 data class PlantasResponseDto(
     val data: List<PlantaDto>,

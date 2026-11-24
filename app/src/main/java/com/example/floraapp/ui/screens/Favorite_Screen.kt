@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.domain.model.PlantasModel
 import com.example.floraapp.repository.PlantaViewModel
 import com.example.floraapp.ui.components.AppBottomBar
 
@@ -37,15 +38,15 @@ fun Favorite_Screen(
 	onAdd: () -> Unit,
 	onSobre: () -> Unit,
 	onPerfil: () -> Unit,
-	viewModel: PlantaViewModel
+	plantaviewmodel: PlantaViewModel
 ) {
 	val selecionados = remember { mutableStateListOf<Int>() }
 	val selecionadosState = selecionados.toList()
 	
-	val prod by viewModel.pegarTodosProdutos.collectAsState()
+	val prod by plantaviewmodel.pegarTodasAsPlantas.collectAsState()
 	val filtered = prod.filter { it.favorite }
 	
-	fun toggleitem(item: Plantas) {
+	fun toggleitem(item: PlantasModel) {
 		val id = item.id
 		if (selecionados.contains(id)) {
 			selecionados.remove(id)
@@ -79,7 +80,7 @@ fun Favorite_Screen(
 								selecionadosState.forEach { selectedId ->
 									val item = filtered.find { it.id == selectedId }
 									if (item != null) {
-										viewModel.Deletar(item)
+										plantaviewmodel.Deletar(item)
 									}
 								}
 								selecionados.clear()
@@ -90,7 +91,7 @@ fun Favorite_Screen(
 								selecionadosState.forEach { selectedId ->
 									val item = filtered.find { it.id == selectedId }
 									if (item != null) {
-										viewModel.Deletar(item)
+										plantaviewmodel.Deletar(item)
 									}
 								}
 								selecionados.clear()
@@ -136,7 +137,7 @@ fun Favorite_Screen(
 			) {
 				items(filtered) { favoritos ->
 					Recomendations(
-						producstList = favoritos,
+						plantasModel = favoritos,
 						onAddToFavorite = {
 							toggleitem(favoritos)
 						},

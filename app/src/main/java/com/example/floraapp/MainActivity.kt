@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
                 composable(Rotas.HOME) {
                     Home_Screen(
-                        productViewModel = viewmodel,
+                        plantaviewmodel = viewmodel,
 
                         onDetails = { id ->
                             navController.navigate("${Rotas.DETAILS}/$id")
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                         onBack = { navController.popBackStack() },
                         onSave = { add ->
                             lifecycleScope.launch {
-                                viewmodel.Inserir(add)
+                                viewmodel.Inserir(plantasModel = add)
                             }
                             navController.navigate(Rotas.HOME)
                         }
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                         onSobre = { navController.navigate(Rotas.SOBRE) },
                         onFavorites = { navController.navigate(Rotas.FAVORITES) },
                         onPerfil = { navController.navigate(Rotas.PROFILE) },
-                        viewModel = viewmodel
+                        plantaviewmodel = viewmodel
                     )
                 }
 
@@ -103,9 +103,12 @@ class MainActivity : AppCompatActivity() {
 
                     Details_Screen(
                         id = id,
-                        viewmodel = viewmodel,
+                        plantaViewModel = viewmodel,
                         voltar = {
                             navController.popBackStack()
+                        },
+                        onAddFavorito = {plantaFavoritada ->
+                            viewmodel.atualizarFavoritos(plantasModel = plantaFavoritada)
                         },
                         irparaFavorito = {},
                         irparaAtualizar = {
@@ -121,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                     produto?.let {
 
                         AddToScreen(
-                            produto = it,
+                            planta = it,
                             onBack = {
                                 navController.popBackStack()
                             },

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.domain.model.PlantasModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,16 +28,16 @@ interface PlantaDao {
     @Query("SELECT * FROM Plantas")
     fun pegarTodos(): Flow<List<Plantas>>
 
-    @Query("SELECT * FROM Plantas WHERE id = :id")
+    @Query("SELECT * FROM plantas WHERE id = :id")
     fun pegarPorId(id: Int): Flow<Plantas?>
 
     @Query("SELECT * FROM plantas WHERE trefleId = :trefledId LIMIT 1")
     suspend fun pegarPorTreledId(trefledId: Int): Plantas?
 
-    @Query("SELECT * FROM PLANTAS WHERE title LIKE '%' || :title || '%' ")
+    @Query("SELECT * FROM plantas WHERE title LIKE '%' || :title || '%' ")
      fun searchPlantas(title: String): Flow<List<Plantas>>
 
-    @Query("UPDATE Plantas SET favorite = :favorite WHERE id = :id")
+    @Query("UPDATE plantas SET favorite = :favorite WHERE id = :id")
     suspend fun updateFavorite(id: Int, favorite: Boolean)
 }
 

@@ -8,7 +8,7 @@ interface PlantaRepositoryDomain {
     suspend fun searchPlantas(search: String): List<PlantasModel>
     fun observeById(id: Int): Flow<PlantasModel?>
 
-    suspend fun refresh()
+    suspend fun refresh(page:Int)
     suspend fun insertPlanta(plantas: PlantasModel)
 
     suspend fun deletePLanta(plantas: PlantasModel)
@@ -19,4 +19,5 @@ interface PlantaRepositoryDomain {
         id: Int,
         favorite: Boolean
     )
+
 }

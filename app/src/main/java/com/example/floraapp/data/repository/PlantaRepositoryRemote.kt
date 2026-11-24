@@ -1,13 +1,12 @@
 package com.example.floraapp.data.repository
 
 import com.example.floraapp.data.dao.PlantaDao
-import com.example.floraapp.data.entitys.Plantas
-import com.example.floraapp.data.mapper.toDomain
+import com.example.floraapp.data.remote.mapper.toDomain
 import com.example.floraapp.data.remote.PlantasApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import com.example.floraapp.BuildConfig
-import com.example.floraapp.data.mapper.toEntity
+import com.example.floraapp.data.remote.mapper.toEntity
 import com.example.floraapp.domain.model.PlantasModel
 import com.example.floraapp.domain.repository.PlantaRepositoryDomain
 
@@ -31,8 +30,8 @@ class PlantaRepositoryRemote(
         }
     }
 
-    override suspend fun refresh(){
-        val response = apiService.getPlants(token = apiToken)
+    override suspend fun refresh(page: Int) {
+        val response = apiService.getPlants(token = apiToken, page = page, per_page = 20)
 
         response.data.forEach { planta ->
             val plantaApi = planta.toDomain()
@@ -78,6 +77,16 @@ class PlantaRepositoryRemote(
     }
 
     override suspend fun updateFavorite(id: Int, favorite: Boolean) {
-        daoProduct.updateFavorite(id, favorite)
+        try {
+            daoProduct.updateFavorite(id, favorite)
+            if (favorite) {
+                print("Adicionada aos favoritos")
+            } else {
+                print("Removido dos favoritos favoritos")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            print("Erro ao adiiconar ${e.message}")
+        }
     }
 }

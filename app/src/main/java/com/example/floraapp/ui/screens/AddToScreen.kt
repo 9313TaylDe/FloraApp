@@ -45,287 +45,287 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.floraapp.R
 import com.example.floraapp.data.entitys.Plantas
+import com.example.floraapp.domain.model.PlantasModel
 import com.example.floraapp.ui.colors.DarkGreen
 
 @Composable
 fun AddToScreen(
-	produto: Plantas? = null,
-	onBack: () -> Unit,
-	onSave: (Plantas) -> Unit
+    planta: PlantasModel
+
+    ? = null,
+    onBack: () -> Unit,
+    onSave: (PlantasModel) -> Unit
 ) {
-	
-	var nomePlanta by rememberSaveable {
-		mutableStateOf(produto?.title ?: "")
-	}
-	
-	var especie by rememberSaveable {
-		mutableStateOf(produto?.description ?: "")
-	}
-	
-	var preco by rememberSaveable {
-		mutableStateOf(produto?.price?.toString() ?: "")
-	}
-	
-	var categoria by rememberSaveable {
-		mutableStateOf(produto?.typeMedia ?: "")
-	}
-	
-	var observacoes by rememberSaveable {
-		mutableStateOf(produto?.description ?: "")
-	}
-	
-	var imagemSelecionada by remember {
-		mutableStateOf<Any?>(
-			when {
-				produto?.imgURI?.isNotEmpty() == true ->
-					Uri.parse(produto.imgURI)
-				
-				produto?.imgRes != 0 ->
-					produto?.imgRes
-				
-				else -> null
-			}
-		)
-	}
-	val launcher = rememberLauncherForActivityResult(
-		ActivityResultContracts.PickVisualMedia()
-	) { uri ->
-		imagemSelecionada = uri
-	}
-	
-	Scaffold(
-		modifier = Modifier
-			.statusBarsPadding()
-			.padding(14.dp),
-		topBar = {
-			Row(
-				modifier = Modifier.padding(horizontal = 6.dp),
-				verticalAlignment = Alignment.CenterVertically
-			) {
-				Icon(
-					imageVector = Icons.Default.ArrowBackIosNew,
-					contentDescription = "voltar para a tela home",
-					modifier = Modifier.clickable { onBack() },
-					
-					)
-				
-				Text(
-					text = "Adicionar planta",
-					modifier = Modifier.weight(1f),
-					textAlign = TextAlign.Center,
-					fontSize = 19.sp,
-					fontWeight = FontWeight.SemiBold
-				)
-				
-				Spacer(
-					modifier = Modifier.width(20.dp)
-				)
-			}
-		}
-	) { paddingValues ->
-		BoxWithConstraints(
-			modifier = Modifier
-				.padding(paddingValues)
-				.fillMaxWidth()
-		) {
-			
-			val isSmallScreen = maxWidth < 360.dp
-			val isTablet = maxWidth >= 600.dp
-			
-			val imageHeight = when {
-				isTablet -> 300.dp
-				isSmallScreen -> 140.dp
-				else -> 220.dp
-			}
-			
-			val imageSize = when {
-				isTablet -> 220.dp
-				isSmallScreen -> 100.dp
-				else -> 160.dp
-			}
-			
-			val titleSize = when {
-				isTablet -> 22.sp
-				isSmallScreen -> 16.sp
-				else -> 19.sp
-			}
-			
-			Column(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(
-						horizontal = if (isTablet) 32.dp else 16.dp,
-						vertical = 16.dp
-					)
-					.verticalScroll(rememberScrollState()),
-				horizontalAlignment = Alignment.CenterHorizontally
-			) {
-				
-				Column(
-					modifier = Modifier
-						.fillMaxWidth()
-						.height(imageHeight)
-						.clickable {
-							launcher.launch(
-								PickVisualMediaRequest(
-									ActivityResultContracts.PickVisualMedia.ImageOnly
-								)
-							)
-						}
-						.drawBehind {
-							
-							val stroke = Stroke(
-								width = 2f,
-								pathEffect = PathEffect.dashPathEffect(
-									floatArrayOf(10f, 10f),
-									0f
-								)
-							)
-							
-							drawRect(
-								color = DarkGreen,
-								style = stroke
-							)
-						}
-						.padding(12.dp),
-					horizontalAlignment = Alignment.CenterHorizontally,
-					verticalArrangement = Arrangement.Center
-				) {
-					
-					if (imagemSelecionada == null) {
-						
-						Icon(
-							imageVector = Icons.Default.Photo,
-							contentDescription = null,
-							modifier = Modifier.size(
-								if (isTablet) 72.dp else 48.dp
-							)
-						)
-						
-						Text(
-							text = "Toque para selecionar uma foto",
-							fontSize = if (isTablet) 18.sp else 14.sp
-						)
-						
-					} else {
-						
-						AsyncImage(
-							model = imagemSelecionada,
-							contentDescription = null,
-							modifier = Modifier.size(imageSize)
-						)
-					}
-				}
-				
-				Spacer(modifier = Modifier.height(24.dp))
-				
-				Text(
-					text = "Nome da planta",
-					fontSize = titleSize
-				)
-				
-				TextField(
-					modifier = Modifier.fillMaxWidth(),
-					value = nomePlanta,
-					onValueChange = { nomePlanta = it }
-				)
-				
-				Spacer(modifier = Modifier.height(12.dp))
-				
-				Text(
-					text = "Espécie",
-					fontSize = titleSize
-				)
-				
-				TextField(
-					modifier = Modifier.fillMaxWidth(),
-					value = especie,
-					onValueChange = { especie = it }
-				)
-				
-				Spacer(modifier = Modifier.height(12.dp))
-				
-				Text(
-					text = "Categoria",
-					fontSize = titleSize
-				)
-				
-				TextField(
-					modifier = Modifier.fillMaxWidth(),
-					value = categoria,
-					onValueChange = { categoria = it }
-				)
-				Spacer(modifier = Modifier.height(12.dp))
-				
-				Text(
-					text = "Preço",
-					fontSize = titleSize
-				)
-				
-				TextField(
-					modifier = Modifier.fillMaxWidth(),
-					value = preco,
-					onValueChange = { preco = it }
-				)
-				
-				Spacer(modifier = Modifier.height(12.dp))
-				
-				Text(
-					text = "Observações",
-					fontSize = titleSize
-				)
-				
-				TextField(
-					modifier = Modifier.fillMaxWidth(),
-					value = observacoes,
-					onValueChange = { observacoes = it }
-				)
-				
-				Spacer(modifier = Modifier.height(24.dp))
-				
-				Button(
-					modifier = Modifier
-						.fillMaxWidth()
-						.height(
-							if (isTablet) 60.dp else 52.dp
-						),
-					enabled =
-						especie.isNotEmpty() &&
-								categoria.isNotEmpty() &&
-								nomePlanta.isNotEmpty() &&
-								imagemSelecionada != null,
-					onClick = {
-						val newItem = Plantas(
-							id = produto?.id ?: 0,
-							title = nomePlanta,
-							description = observacoes,
-							price = preco.toFloatOrNull() ?: 0f,
-							imgRes = R.drawable.outline_local_florist_24,
-							typeMedia = categoria,
-							favorite = produto?.favorite ?: false
-						)
-						
-						onSave(newItem)
-					}
-				) {
-					Text(
-						text = "Salvar",
-						fontSize = if (isTablet) 18.sp else 14.sp
-					)
-				}
-			}
-		}
-	}
+
+    var nomePlanta by rememberSaveable {
+        mutableStateOf(planta?.title ?: "")
+    }
+
+    var familia by rememberSaveable {
+        mutableStateOf(planta?.family ?: "")
+    }
+
+    var favorito by rememberSaveable {
+        mutableStateOf(planta?.favorite ?: "")
+    }
+
+    var categoria by rememberSaveable {
+        mutableStateOf(planta?.genus ?: "")
+    }
+
+
+    var imagemSelecionada by remember {
+        mutableStateOf<Any?>(
+            when {
+                planta?.imageUrl?.isNotEmpty() == true ->
+                    Uri.parse(planta.imageUrl)
+
+                planta?.imageUrl?.toInt() != 0 ->
+                    planta?.imageUrl
+
+                else -> null
+            }
+        )
+    }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imagemSelecionada = uri
+    }
+
+    Scaffold(
+        modifier = Modifier
+            .statusBarsPadding()
+            .padding(14.dp),
+        topBar = {
+            Row(
+                modifier = Modifier.padding(horizontal = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBackIosNew,
+                    contentDescription = "voltar para a tela home",
+                    modifier = Modifier.clickable { onBack() },
+
+                    )
+
+                Text(
+                    text = "Adicionar planta",
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Spacer(
+                    modifier = Modifier.width(20.dp)
+                )
+            }
+        }
+    ) { paddingValues ->
+        BoxWithConstraints(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxWidth()
+        ) {
+
+            val isSmallScreen = maxWidth < 360.dp
+            val isTablet = maxWidth >= 600.dp
+
+            val imageHeight = when {
+                isTablet -> 300.dp
+                isSmallScreen -> 140.dp
+                else -> 220.dp
+            }
+
+            val imageSize = when {
+                isTablet -> 220.dp
+                isSmallScreen -> 100.dp
+                else -> 160.dp
+            }
+
+            val titleSize = when {
+                isTablet -> 22.sp
+                isSmallScreen -> 16.sp
+                else -> 19.sp
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = if (isTablet) 32.dp else 16.dp,
+                        vertical = 16.dp
+                    )
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(imageHeight)
+                        .clickable {
+                            launcher.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        }
+                        .drawBehind {
+
+                            val stroke = Stroke(
+                                width = 2f,
+                                pathEffect = PathEffect.dashPathEffect(
+                                    floatArrayOf(10f, 10f),
+                                    0f
+                                )
+                            )
+
+                            drawRect(
+                                color = DarkGreen,
+                                style = stroke
+                            )
+                        }
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    if (imagemSelecionada == null) {
+
+                        Icon(
+                            imageVector = Icons.Default.Photo,
+                            contentDescription = null,
+                            modifier = Modifier.size(
+                                if (isTablet) 72.dp else 48.dp
+                            )
+                        )
+
+                        Text(
+                            text = "Toque para selecionar uma foto",
+                            fontSize = if (isTablet) 18.sp else 14.sp
+                        )
+
+                    } else {
+
+                        AsyncImage(
+                            model = imagemSelecionada,
+                            contentDescription = null,
+                            modifier = Modifier.size(imageSize)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Nome da planta",
+                    fontSize = titleSize
+                )
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = nomePlanta,
+                    onValueChange = { nomePlanta = it }
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Espécie",
+                    fontSize = titleSize
+                )
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = familia,
+                    onValueChange = { familia = it }
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Categoria",
+                    fontSize = titleSize
+                )
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = categoria,
+                    onValueChange = { categoria = it }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Preço",
+                    fontSize = titleSize
+                )
+
+//                TextField(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    value = favorito,
+//                    onValueChange = { favorito = it }
+//                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Observações",
+                    fontSize = titleSize
+                )
+
+//				TextField(
+//					modifier = Modifier.fillMaxWidth(),
+//					value = ,
+//					onValueChange = { descricao = it }
+//				)
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(
+                            if (isTablet) 60.dp else 52.dp
+                        ),
+                    enabled =
+                        familia.isNotEmpty() &&
+                                categoria.isNotEmpty() &&
+                                nomePlanta.isNotEmpty() &&
+                                imagemSelecionada != null,
+                    onClick = {
+                        val newItem = PlantasModel(
+                            id = planta?.id ?: 0,
+                            title = nomePlanta,
+                            favorite = planta?.favorite ?: false,
+                            imageUrl = R.drawable.outline_local_florist_24.toString(),
+                            family = familia,
+                            isCustom = planta?.isCustom ?: false,
+                            scientificName = planta?.scientificName ?: ""
+                        )
+
+                        onSave(newItem)
+                    }
+                ) {
+                    Text(
+                        text = "Salvar",
+                        fontSize = if (isTablet) 18.sp else 14.sp
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Preview(
-	showBackground = true,
-	showSystemUi = true
+    showBackground = true,
+    showSystemUi = true
 )
 @Composable
 fun AddToScreenPreview() {
-	AddToScreen(
-		onBack = {},
-		onSave = {}
-	)
+    AddToScreen(
+        onBack = {},
+        onSave = {}
+    )
 }
