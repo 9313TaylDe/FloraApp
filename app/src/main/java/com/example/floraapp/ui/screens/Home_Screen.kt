@@ -334,7 +334,6 @@ fun Home_Screen(
                 enabled = !carregando,
                 onClick = {
                     plantaviewmodel.morePLants()
-
                 }) {
                 Text(
                     text = if (carregando) {

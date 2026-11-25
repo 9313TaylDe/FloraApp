@@ -40,6 +40,3 @@ interface PlantaDao {
     @Query("UPDATE plantas SET favorite = :favorite WHERE id = :id")
     suspend fun updateFavorite(id: Int, favorite: Boolean)
 }
-
-
-// VERSION 2, AUTOMATIC CODING, WITHOUT HELP FROM CHATGPT

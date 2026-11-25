@@ -57,13 +57,6 @@ class PlantaRepositoryRemote(
             planta?.toDomain()
         }
     }
-
-    suspend fun refreshRoom() {
-        val apiResponse = apiService.getPlants(token = apiToken)
-
-
-    }
-
     override suspend fun insertPlanta(plantas: PlantasModel) {
         daoProduct.inserir(plantas.toEntity())
     }
@@ -86,7 +79,7 @@ class PlantaRepositoryRemote(
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            print("Erro ao adiiconar ${e.message}")
+            print("Erro ao adicionar ${e.message}")
         }
     }
 }

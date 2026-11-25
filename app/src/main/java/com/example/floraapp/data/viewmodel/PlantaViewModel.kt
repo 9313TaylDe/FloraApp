@@ -58,6 +58,12 @@ class PlantaViewModel(val plantaRepositoryDomain: PlantaRepositoryDomain) : View
         }
     }
 
+    fun recomendationsPLants(qtd:Int){
+        viewModelScope.launch {
+            _paginaInciial.value = 10
+        }
+    }
+
     fun morePLants() {
         viewModelScope.launch {
             carregarPagina(_paginaInciial.value + 1)

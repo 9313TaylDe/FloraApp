@@ -1,8 +1,9 @@
-
 package com.example.floraapp.ui.screens
 
+import Recomendations
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,9 +14,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -25,7 +30,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,10 +40,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.floraapp.R
 import com.example.floraapp.domain.model.PlantasModel
@@ -52,7 +62,7 @@ fun Details_Screen(
     irparaAtualizar: () -> Unit
 ) {
     val message by plantaViewModel.message.collectAsState()
-
+    val pegarTodosPlantas by plantaViewModel.pegarTodasAsPlantas.collectAsState()
     val planta by plantaViewModel.pegarPoriD(id)
         .collectAsState(initial = null)
 
@@ -87,47 +97,42 @@ fun Details_Screen(
         ?.let { Uri.parse(it) }
         ?: R.drawable.outline_local_florist_24
 
-    Scaffold(
+    Surface(
         modifier = Modifier
             .statusBarsPadding()
-            .padding(14.dp),
-
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 6.dp)
-                    .padding(bottom = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    contentDescription = "Voltar para a tela home",
-                    modifier = Modifier.clickable {
-                        voltar()
-                    }
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text("Detalhes da planta")
-            }
-        }
-    ) { paddingValues ->
+            .padding(),
+    ) {
 
         Box(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding()
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
 
+
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.90f)
+                    .fillMaxSize()
             ) {
-
+                IconButton(
+                    onClick = voltar,
+                    modifier = Modifier
+                        .offset(x = 10.dp, y = 10.dp)
+                        .zIndex(10f)
+                        .align(Alignment.TopStart)
+                        .clip(RoundedCornerShape(100.dp))
+                        .background(Color.Black.copy(alpha = 0.35f))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        contentDescription = "Voltar para a tela home",
+                        tint = Color.White.copy(alpha = 0.9f),
+                        modifier = Modifier
+                            .padding(14.dp)
+                            .size(22.dp)
+                    )
+                }
                 AsyncImage(
                     model = imagem,
                     contentDescription = plantaAtual.title,
@@ -156,6 +161,19 @@ fun Details_Screen(
                             plantaAtual.title,
                             fontSize = 28.sp
                         )
+                        Spacer(Modifier.weight(1f))
+
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(pegarTodosPlantas.take(10)) { planta ->
+                                Recomendations(
+                                    plantasModel = planta,
+                                    irparaDetails = {},
+                                    onAddToFavorite = {}
+                                )
+                            }
+                        }
 
                         Spacer(Modifier.weight(1f))
 
