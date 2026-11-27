@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Favorite
@@ -90,6 +92,8 @@ fun Details_Screen(
         return
     }
 
+    val scrooll = rememberScrollState()
+
     val plantaAtual = planta!!
 
     val imagem: Any = plantaAtual.imageUrl
@@ -97,15 +101,15 @@ fun Details_Screen(
         ?.let { Uri.parse(it) }
         ?: R.drawable.outline_local_florist_24
 
-    Surface(
+    Scaffold(
         modifier = Modifier
             .statusBarsPadding()
             .padding(),
-    ) {
+    ) { paddingValues ->
 
         Box(
             modifier = Modifier
-                .padding()
+                .padding(paddingValues)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
@@ -158,11 +162,31 @@ fun Details_Screen(
                             .padding(20.dp)
                     ) {
                         Text(
-                            plantaAtual.title,
+                            ("Nome: ${plantaAtual.title}"),
                             fontSize = 28.sp
                         )
-                        Spacer(Modifier.weight(1f))
+                        Spacer(Modifier.height(5.dp))
 
+                        Text(
+                            text = ("Nome cientifíco: ${plantaAtual.scientificName}"),
+                            fontSize = 17.sp
+                        )
+
+
+                        Text(
+                            text = ("Gênero: ${plantaAtual.genus ?: "desconhecido"}"),
+                            fontSize = 17.sp
+
+                        )
+                        Text(
+                            text = ("Familia: ${plantaAtual.family ?: "desconhecida"}"),
+                            fontSize = 18.sp
+
+                        )
+                        Spacer(Modifier.weight(1f))
+                        Text(
+                            "Sugestões", fontSize = 31.sp
+                        )
                         LazyRow(
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -174,9 +198,6 @@ fun Details_Screen(
                                 )
                             }
                         }
-
-                        Spacer(Modifier.weight(1f))
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,

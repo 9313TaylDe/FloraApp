@@ -21,26 +21,31 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AllInbox
 import androidx.compose.material.icons.filled.ArrowCircleRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocalFlorist
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -81,20 +86,9 @@ fun Home_Screen(
     val message by plantaviewmodel._message.collectAsState()
     val context = LocalContext.current
     val categorias = listOf("Internas", "Externas", "Suculentas", "Flores")
+
     LaunchedEffect(Unit) {
-        plantaviewmodel.refresh()
-    }
-
-    LaunchedEffect(message) {
-        if (message.isNotEmpty()) {
-            Toast.makeText(
-                context,
-                message,
-                Toast.LENGTH_SHORT
-            ).show()
-
-            plantaviewmodel.limparMessage()
-        }
+        plantaviewmodel.restarPaginacao()
     }
 
     var searching by remember { mutableStateOf("") }
@@ -127,9 +121,7 @@ fun Home_Screen(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     BoasVindas(
-                        title = "Expedito",
-                        textColor = titleColor,
-                        textWeight = 17.sp
+                        title = "Expedito", textColor = titleColor, textWeight = 17.sp
                     )
                 }
 
@@ -158,11 +150,7 @@ fun Home_Screen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 listOf(
-                    Rotas.HOME,
-                    Rotas.FAVORITES,
-                    Rotas.ADD,
-                    Rotas.SOBRE,
-                    Rotas.PROFILE
+                    Rotas.HOME, Rotas.FAVORITES, Rotas.ADD, Rotas.SOBRE, Rotas.PROFILE
                 ).forEach { rota ->
 
                     Button(
@@ -175,8 +163,7 @@ fun Home_Screen(
                                 Rotas.SOBRE -> onSobre()
                                 Rotas.PROFILE -> onPerfil()
                             }
-                        }
-                    ) {
+                        }) {
                         Icon(
                             imageVector = iconeDoBotao(rota),
                             contentDescription = null,
@@ -214,53 +201,46 @@ fun Home_Screen(
 
             Spacer(Modifier.height(10.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .background(fundocardsuggestions, RoundedCornerShape(25.dp))
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        "Plantas transformam ambientes",
-                        color = Color.White,
-                        fontSize = 18.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            "Veja nossas sugestões",
-                            color = Color.White,
-                            fontSize = 12.sp
-                        )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Icon(
-                            imageVector = Icons.Default.ArrowCircleRight,
-                            tint = Color.White,
-                            contentDescription = null
-                        )
-                    }
-                }
-
-                Image(
-                    painter = painterResource(R.drawable.sugggestionsplantcards),
-                    contentDescription = null,
-                    modifier = Modifier.size(120.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(100.dp)
+//                    .background(fundocardsuggestions, RoundedCornerShape(25.dp))
+//                    .padding(12.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Column(modifier = Modifier.weight(1f)) {
+//                    Text(
+//                        "Plantas transformam ambientes", color = Color.White, fontSize = 18.sp
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(12.dp))
+//
+//                    Row(verticalAlignment = Alignment.CenterVertically) {
+//                        Text(
+//                            "Veja nossas sugestões", color = Color.White, fontSize = 12.sp
+//                        )
+//                        Spacer(modifier = Modifier.width(5.dp))
+//                        Icon(
+//                            imageVector = Icons.Default.ArrowCircleRight,
+//                            tint = Color.White,
+//                            contentDescription = null
+//                        )
+//                    }
+//                }
+//
+//                Image(
+//                    painter = painterResource(R.drawable.sugggestionsplantcards),
+//                    contentDescription = null,
+//                    modifier = Modifier.size(120.dp),
+//                    contentScale = ContentScale.Crop
+//                )
+//            }
 
             Text("Categorias", fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
             LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 items(categorias) { cat ->
                     Column(
@@ -283,22 +263,74 @@ fun Home_Screen(
                     }
                 }
             }
-
-
             Spacer(modifier = Modifier.height(15.dp))
 
             val filtered = produtos.filter {
                 it.title.contains(searching.trim(), ignoreCase = true)
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .height(70.dp)
+                    .background(Color.Gray, shape = RoundedCornerShape(10.dp)),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    modifier = Modifier
+                        .width(165.dp)
 
-            Text("Total de plantas: ${produtos.size}")
+                        .padding(start = 10.dp, 10.dp, 25.dp, 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocalFlorist,
+                        contentDescription = "",
+                        modifier = Modifier.size(33.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
 
-            Text("Plantas encontradas: ${filtered.size}")
+                    Column() {
+                        Text(
+                            text = "${produtos.size}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text("Total de plantas", fontSize = 15.sp)
+                    }
+                }
+                VerticalDivider(
+                    Modifier
+                        .height(30.dp)
+                        .align(Alignment.CenterVertically),
+                )
+                Row(
+                    modifier = Modifier
+                        .width(165.dp)
+                        .padding(start = 25.dp, 10.dp, 10.dp, 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AllInbox,
+                        contentDescription = "",
+                        modifier = Modifier.size(33.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column() {
+                        Text(
+                            text = "${filtered.size}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text("Encontrados", fontSize = 15.sp)
+                    }
+                }
+            }
             if (filtered.isEmpty()) {
 
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
                     Text("Nenhum produto encontrado")
                 }
@@ -324,24 +356,34 @@ fun Home_Screen(
                                         favorite = !planta.favorite
                                     )
                                 )
-                            }
-                        )
+                            })
+                    }
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.Gray,
+                                containerColor = Color.Transparent
+                            ),
+                            enabled = !carregando, onClick = {
+                                plantaviewmodel.morePLants()
+                            }) {
+                            Text(
+                                "Carregar mais"
+
+                            )
+                        }
                     }
 
                 }
-            }
-            Button(
-                enabled = !carregando,
-                onClick = {
-                    plantaviewmodel.morePLants()
-                }) {
                 Text(
                     text = if (carregando) {
                         "Carregando..."
                     } else {
-                        "Carregar mais"
+                        ""
                     }
                 )
+
             }
         }
     }
